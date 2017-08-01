@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"mybatis-3-mapper.dtd">
+<mapper namespace="cn.bdqn.dao.IRoleDao">
+   <select id="roleNameById" parameterType="int" resultType="String">
+   		select roleName from t_role where roleId=#{roleId}
+   </select>
+   <select id="authIdsById" parameterType="int" resultType="String">
+   		select authIds from t_role where roleId=#{roleId}
+   </select>
+   <select id="roleList" resultType="Role">
+   		select * from t_role
+   </select>
+   <select id="roleCount" resultType="int">
+   		select count(*) as total from t_role
+   </select>
+   <delete id="roleDelete" parameterType="int">
+   		delete from t_role where roleId =#{delIds}
+   </delete>
+   <insert id="roleAdd" parameterType="Role">
+   		insert into t_role values(null,#{rolename},#{autoids},#{roleDescription})
+   </insert>
+   <update id="roleUpdate" parameterType="Role">
+   		update t_role set roleName=#{roleName},roleDescription=#{roleDescription} where roleId=#{roleId}
+   </update>
+   <update id="roleAuthIdsUpdate" parameterType="Role">
+   		update t_role set authIds=#{authIds} where roleId=#{roleId}
+   </update>
+</mapper>

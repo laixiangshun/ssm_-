@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"mybatis-3-mapper.dtd">
+<mapper namespace="cn.bdqn.dao.IUserDao1">
+	
+	<select id="login" parameterType="User1" resultType="User1">
+   		select * from t_user where userName=#{userName} and password=#{password}
+   </select>
+   
+   <update id="modifyPassword" parameterType="User1">
+   		update t_user set password=#{password} where uId=#{uId}
+   </update>
+   
+   <select id="userList" parameterType="Map" resultMap="userMap1">
+   		select * from t_user u ,t_role r where u.roleId=r.roleId and u.userType!=1 
+   		<if test="userName!=null">  
+    		and u.userName=#{userName}  
+    	</if>
+    	<if test="roleId!=-1">  
+    		and u.roleId =#{roleId}  
+    	</if>
+    	<if test="start!=null and pageSize!=null">
+			limit #{start},#{pageSize}
+		</if>
+   </select>
+   <resultMap type="User1" id="userMap1">
+   		<id property="uId" column="uId"/>
+   		<result property="userName" column="userName"/>
+   		<result property="password" column="password"/>
+   		<result property="userType" column="userType"/>
+   		<result property="roleId" column="roleId"/>
+   		<result property="userDescription" column="userDescription"/>
+   		<association property="role" column="roleId" javaType="Role">
+   			<id property="roleId" column="roleId"/>
+   			<result property="roleName" column="roleName"/>
+   			<result property="authIds" column="authIds"/>
+   			<result property="roleDescription" column="roleDescription"/>
+   		</association>
+   </resultMap>
+   
+   <select id="userCount" parameterType="User1" resultType="int">
+   		select count(*) as total from t_user u ,t_role r where u.roleId=r.roleId and u.userType!=1 
+   		<if test="userName!=null">  
+    		and u.userName=#{userName} 
+    	</if>
+    	<if test="roleId!=-1">  
+    		and u.roleId =#{roleId}  
+    	</if>
+   </select>
+   
+   <insert id="userAdd" parameterType="User1">
+   		insert into t_user values(uId=#{uId},userName=#{userName},password=#{password},userType=#{userType},roleId=#{roleId})
+   </insert>
+   
+   <update id="userUpdate" parameterType="User1">
+   		update t_user set userName=#{userName},password=#{password},roleId=#{roleId},userDescription=#{userDescription} where uId=#{uId}
+   </update>
+   
+   <select id="existUserWithRoleId" parameterType="String" resultType="boolean">
+   		select * from t_user where userName=#{userName};
+   </select>
+   
+   
+   <select id="selAllUser" resultType="JMUser">    
+        select * from tb_jmusers
+    </select>    
+    <!-- 查询用户列表数量 -->  
+    <select id="selAllUserNum" resultType="int">  
+        select count(*) from tb_jmusers   
+    </select>  
+    <update id="update" parameterType="JMUser">
+    	update tb_jmusers set loginname=#{loginname},password=#{password},username=#{username},
+    	rights=#{rights},status=#{status},roleId=#{roleId} where jmid=#{jmid}
+    </update>
+	
+	<insert id="add" parameterType="JMUser">
+		insert into tb_jmusers values(null,#{loginname},#{password},#{username},#{rights},#{status},#{roleId})	
+	</insert>    
+	
+	<delete id="delete" parameterType="int">
+		delete from tb_jmusers where jmid=#{jmid}
+	</delete>
+	
+	<select id="find" parameterType="Map" resultType="JMUser">
+		select * from tb_jmusers 
+		<where>
+			<if test="username!=null and username!='' ">
+				and username = #{username}
+			</if>
+		</where>
+		<if test="start!=null and pageSize!=null">
+			limit #{start},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="selAllUserFen" parameterType="PageBean" resultType="JMUser">
+		select * from tb_jmusers limit #{start},#{pageSize}
+	</select>
+	
+	<select id="selAllUserNum1" parameterType="String" resultType="int">
+		select count(*) from tb_jmusers where username=#{username} GROUP BY username;
+	</select>
+	
+	<select id="SelJMUser" parameterType="JMUser" resultType="JMUser">
+		select  * from tb_jmusers where 1=1  
+	</select>
+</mapper>
